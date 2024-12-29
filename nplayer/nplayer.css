@@ -1,0 +1,259 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css");
+body, html {
+    min-width: 400px;
+}
+.bg_player, .bg_player_mask, body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+div {
+    display: block;
+    margin: 0;
+    padding: 0;
+    unicode-bidi: isolate;
+}
+.bg_player_mask {
+    background-color: rgba(0, 0, 0, 0.35); /* 半透明黑色遮罩层 */
+    z-index: 2;
+}
+.bg_player {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 50%;
+    filter: blur(65px);
+    opacity: .6;
+    transform: translateZ(0);
+    background-image: url("https://img.alicdn.com/imgextra/i3/O1CN01HKF8IE21NglxmBjwj_!!6000000006973-2-tps-456-502.png");
+}
+.bg_player, .bg_player_mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.mod_player {
+    height: 100vh;
+    margin: 0 7%;
+    position: relative;
+    z-index: 3;
+}
+.player_bd, .player_ft {
+    position: absolute;
+    width: 100%;
+}
+.player_bd {
+    top: 11%;
+    bottom: 18%;
+    min-height: 328px;
+    justify-content: center;
+    cursor: default;
+}
+.player_ft {
+    bottom: 0;
+    left: 0;
+    height: 13%;
+    min-height: 180px;
+}
+.player_ft_top {
+    /* position: relative; */
+    width: 100%;
+    /* text-align: center; */
+}
+.player_ft_bottom {
+    margin-top: 20px;
+    display: flex;
+    width: 100%;
+    text-align: center;
+    justify-content: space-between;
+}
+.player_lyrics {
+    text-align: center;
+}
+.album-cover {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 50%;
+}
+.album-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.song-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+.artist-name {
+    font-size: 16px;
+    color: #131212;
+}
+.player_music_info {
+    font-size: 14px;
+    width: 150px;
+    justify-self: left;
+    color: #ccc;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.player_music_time {
+    font-size: 14px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #ccc;
+}
+.player_progress {
+    padding-top: 6px;
+    height: 8px;
+    cursor: pointer;
+}
+.player_progress_inner {
+    position: relative;
+    height: 2px;
+    border-radius: 5px;
+    background: hsla(0, 0%, 100%, .1);
+}
+.player_progress_load, .player_progress_play {
+    width: 0%;
+    margin-left: 0px;
+}
+.player_progress_load {
+    /* height: 2px;
+    border-radius: 5px;
+    background: hsla(0, 0%, 100%, .2); */
+}
+.player_progress_play {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    border-radius: 5px;
+    background: hsla(0, 0%, 100%, .7);
+}
+.player_progress_dot{
+    position: absolute;
+    top: -3px;      /* (8px-2px)/2; */
+    right: -3px;    /* 6px/2; */
+    font-size: 6px;
+    color: hsla(0, 0%, 100%, .7);
+}
+.player_ft_bottom button {
+    background: none;
+    border: none;
+    color: gray;
+    cursor: pointer;
+    font-size: 30px;
+    align-items: center;
+    margin: 0 10px;
+    transition: color 0.3s;
+}
+
+.player_ft_bottom button:hover {
+    color: white;
+}
+.player_center_buttons {
+    display: flex;
+    justify-content: center; /* 居中prev, play, next按钮 */
+    flex-grow: 1; 
+}
+.player_voice {
+    display: flex;
+    min-width: 62px;
+}
+.player_voice_bar {
+    position: relative;
+    top: 14px;      
+    left: -12px; 
+    min-width: 60px;
+    height: 8px;
+    cursor: pointer;
+}
+.player_voice_inner {
+    position: absolute;
+    top: 3px;      
+    width: 60px;
+    height: 2px;
+    border-radius: 5px;
+    background: hsla(0, 0%, 100%, .2);
+}
+.player_voice_play {
+    position: absolute;
+    height: 2px;
+    border-radius: 5px;
+    background: hsla(0, 0%, 100%, .7);
+}
+.player_voice_dot{
+    position: absolute;
+    top: -3px;      
+    right: -3px;    
+    font-size: 6px;
+    color: hsla(0, 0%, 100%, .7);
+}
+.lyrics {
+    margin-top: 20px;
+    font-size: 16px;
+    line-height: 1.5;
+    max-height: 250px;
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #555 transparent; /* For Firefox */
+}
+.lyrics::-webkit-scrollbar {
+    width: 8px; /* For Chrome, Safari, Edge */
+}
+.lyrics::-webkit-scrollbar-track {
+    background: #333; /* Track color */
+}
+.lyrics::-webkit-scrollbar-thumb {
+    background: #555; /* Thumb color */
+    border-radius: 4px;
+}
+.lyrics::-webkit-scrollbar-thumb:hover {
+    background: #777; /* Hover thumb color */
+}
+.lyrics p {
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+.lyrics p.current-line {
+    opacity: 1;
+}
+
+.player_list {
+    position: relative;
+    padding: 15px;
+    border-radius: 10px;
+    overflow-y: auto; /* 如果内容超出高度，允许滚动 */
+    z-index: 3; /* 确保播放列表在其他内容之上 */
+    filter: blur(0px);
+    opacity: .6;
+    /* transform: translateZ(0); */
+    color: #fff;
+    /* font-weight: bold; */
+}
+.play_list_bd {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    z-index: 4;
+}
+
+.play_list_bd li {
+    padding: 10px;
+    font-family: Arial, sans-serif;
+}
+.play_list_bd li:last-child {
+    border-bottom: none; /* 最后一个项目不显示底边框 */
+}
+.play_list_bd li:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* 鼠标悬停时轻微变色 */
+    cursor: pointer;
+}
+
+.highlight {
+    background-color: rgba(0, 0, 0, 0.1); 
+    /* font-weight: bold; */
+}
