@@ -16,10 +16,36 @@ let isLoading = false;
 let isMute = false;
 
 let songList = [
-    '/include/只有我不行的恋爱.mp3',
-    '/include/致我的思春期.mp3',
+    '/include/心做し (心理作用) - 双笙 (陈元汐).mp3',
+    '/include/I Really Want to Stay at Your House - Samuel Kim _ Lorien.mp3',
+    '/include/The Flood - Joshua Hyslop.mp3',
+    '/include/레옹 (Leon) - 朴明秀 _ IU.mp3'
     // ... 其他歌曲
 ];
+
+// const songList = [
+//     {
+//         name: "心做し",
+//         artist: "双笙",
+//         path: "/include/心做し (心理作用) - 双笙 (陈元汐).mp3"
+//     },
+//     {
+//         name: "Song Two",
+//         artist: "Artist Two",
+//         path: "/include/I Really Want to Stay at Your House - Samuel Kim _ Lorien.mp3"
+//     },
+//     {
+//         name: "Song Two",
+//         artist: "Artist Two",
+//         path: "/include/The Flood - Joshua Hyslop.mp3"
+//     },
+//     {
+//         name: "Song Two",
+//         artist: "Artist Two",
+//         path: "/include/레옹 (Leon) - 朴明秀 _ IU.mp3"
+//     },
+//     // 更多歌曲...
+// ];
 
 let currentSongIndex = Math.floor(Math.random() * songList.length);
 
@@ -30,7 +56,7 @@ let playModeList = 3;
 let currentPlayMode = playModeOrder; // 假设初始播放模式为顺序播放
 
 let currentLine = 0;    // 歌词
-let currentVolume = 50;
+let currentVolume = 30;
 let previousSongIndex = currentSongIndex;
 let newTimeWhenDragged = 0; // 用于存储拖动时的播放时间
 let duration;
@@ -71,19 +97,26 @@ function loadSong(songIndex) {
         audioPlayer.addEventListener('durationchange', function() {
             const duration = Math.floor(audioPlayer.duration);
             updateTimeDisplay(0, duration);
+            updateLyrics(0);
         });
         updateVolume(currentVolume);
         updateMusicInfo(songIndex); // 更新音乐信息
-        // updateLyrics(0);
+        loadLyrics(songIndex);
         highlightCurrentSong(songIndex);
     }
     isLoading = false;
 }
 // 更新音乐信息的函数
 function updateMusicInfo(songIndex) {
-    const songName = songList[songIndex].split('/').pop().split('.mp3')[0]; // 从文件路径中提取歌名
+    const songNameAndArtist = songList[songIndex].split('/').pop().split('.mp3')[0]; // 从文件路径中提取歌名
+    const [songName, songArtist] = songNameAndArtist.split(' - '); // 假设歌曲名和歌手名之间用 ' - ' 分隔
+
     const musicInfoElement = document.querySelector('.player_music_info');
-    musicInfoElement.textContent = songName; // 更新歌名
+    musicInfoElement.textContent = `${songName} -${songArtist}`; // 更新歌曲信息
+    const musicNameElement = document.querySelector('.player_music_name');
+    musicNameElement.textContent = songName; // 更新歌名
+    const musicArtistElement = document.querySelector('.player_music_artist');
+    musicArtistElement.textContent = songArtist; // 更新歌手
 }
 function playSong() {
     isPlaying = true;
@@ -182,11 +215,21 @@ audioPlayer.addEventListener('timeupdate', () => {
         const currentTime = Math.floor(audioPlayer.currentTime);
         duration = Math.floor(audioPlayer.duration);
         updateTimeDisplay(currentTime, duration);
-        updateLyrics(currentTime);
+        updateLyrics(audioPlayer.currentTime);
     }
 
 });
+function updateTime(currentTime, duration){
+    const minutesCurrent = String(Math.floor(currentTime / 60)).padStart(2, '0');
+    const secondsCurrent = String(Math.floor(currentTime % 60)).padStart(2, '0');
+    const minutesDuration = String(Math.floor(duration / 60)).padStart(2, '0');
+    const secondsDuration = String(duration % 60).padStart(2, '0');
 
+    timeDisplay.textContent = `${minutesCurrent}:${secondsCurrent} / ${minutesDuration}:${secondsDuration}`;
+
+    const progressPercent = (currentTime / duration) * 100;
+    progressPlay.style.width = `${progressPercent}%`;
+}
 function updateTimeDisplay(currentTime, duration){
     const minutesCurrent = String(Math.floor(currentTime / 60)).padStart(2, '0');
     const secondsCurrent = String(Math.floor(currentTime % 60)).padStart(2, '0');
@@ -197,7 +240,6 @@ function updateTimeDisplay(currentTime, duration){
 
     const progressPercent = (currentTime / duration) * 100;
     progressPlay.style.width = `${progressPercent}%`;
-
 }
 function volumeMute() {
     audioPlayer.muted = true;
@@ -209,7 +251,6 @@ function volumeMute() {
 function volumeMuteNo() {
     audioPlayer.muted = false;
     audioPlayer.volume = currentVolume / 100;
-    // console.log(currentVolume);
     voiceIcon.classList.remove('bi-volume-mute-fill');
     voiceIcon.classList.add('bi-volume-up-fill');
     isMute = false;
@@ -217,7 +258,6 @@ function volumeMuteNo() {
 
 function updateVolume(value) {
     currentVolume = value;
-    // console.log(currentVolume);
     const volumePercent = value / 100;
     audioPlayer.volume = volumePercent;
     voicePlay.style.width = `${volumePercent * 100}%`;
@@ -234,23 +274,7 @@ function toggleMute() {
     }
 }
 
-function updateLyrics(currentTime) {
-    lyricsLines.forEach((line, index) => {
-        const timestamp = parseFloat(line.getAttribute('data-time'));
-        if (timestamp <= currentTime && currentTime < timestamp + 2) {
-            line.classList.add('current-line');
-            if (index !== currentLine) {
-                lyrics.scrollTo({
-                    top: line.offsetTop - lyrics.offsetHeight / 2 + line.offsetHeight / 2,
-                    behavior: 'smooth'
-                });
-                currentLine = index;
-            }
-        } else {
-            line.classList.remove('current-line');
-        }
-    });
-}
+
 // 点击进度条时更改播放进度
 progressBar.addEventListener('click', (e) => {
     // 获取进度条容器的位置和尺寸信息
@@ -265,6 +289,10 @@ progressBar.addEventListener('click', (e) => {
 });
 progressBar.addEventListener('mousedown', () => {
     isProgressDragging  = true;
+    if (!isPlaying) {
+        loadSong(currentSongIndex);
+        playSong();
+    }
 });
 
 
